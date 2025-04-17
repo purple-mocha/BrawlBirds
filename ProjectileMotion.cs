@@ -10,13 +10,22 @@ namespace birds
     {
         private double g = 9.81;
 
-        List<double> X = new List<double>();
-        List<double> Y = new List<double>();
+        private List<double> X = new List<double>();
+        private List<double> Y = new List<double>();
         List<double> Velocity_X = new List<double>();
         List<double> Velocity_Y = new List<double>();
 
         public double x, y, scorost, ugol, k, m; 
-        static public double timeStep = 0.1;
+        static public double timeStep = 0.01;
+
+        public List<double> getXes()
+        {
+            return X;
+        }
+        public List<double> getYes()
+        {
+            return Y;
+        }
 
         public ProjectileMotion(double x = 0, double y = 0, double scorost = 0, double ugol = 0, double k = 0, double m = 0)
         {

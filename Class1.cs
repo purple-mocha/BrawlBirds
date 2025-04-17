@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace birds
 {
@@ -22,13 +25,12 @@ namespace birds
                 "_Масса:",
                 "_Коэфициент сопротивления воздуха:" };
         private TextBox txtOutput;
-
+        private Canvas canv;
         public SpanTheCells()
         {
             Title = "Bird game";
             Grid grid = new Grid();
             Content = grid;
-
             grid.Margin = new Thickness(5);
             for (int i = 0; i <= 3; i++)
             {
@@ -125,15 +127,18 @@ namespace birds
                 TextWrapping = TextWrapping.Wrap,
                 Background = new SolidColorBrush(Colors.Transparent),
             };
-
+            
             grid.Children.Add(txtOutput);
             Grid.SetColumn(txtOutput, 0);
             Grid.SetRow(txtOutput, 1);
             Grid.SetRowSpan(txtOutput, 5);
 
+           
+            
+
         }
 
-        private void buttonFly_Click(object e, EventArgs a)
+        async private void buttonFly_Click(object e, EventArgs a)
         {
 
             ProjectileMotion projectile = new ProjectileMotion();
@@ -150,7 +155,66 @@ namespace birds
             projectile.ReadInputData(inputfile);
             projectile.CalculateTrajectory(outputfile);
             string outputContent = File.ReadAllText(outputfile);
+            Window window = new Window();
+            ImageBrush image = new ImageBrush();
+            string stringi = "https://i.pinimg.com/originals/cb/20/0c/cb200cb1486977f8efec0172d8f035db.jpg";
+            Uri uri = new Uri(stringi);
+            BitmapImage bitmap = new BitmapImage(uri);
+            image.ImageSource = bitmap;
+            canv = new Canvas
+            {
+                Margin = new Thickness(5),
+                Background = image
+            };
+           
+            window.Content = canv;
+            //gridcanv.Children.Add(canv);
             txtOutput.Text = outputContent;
+            window.Show();
+            DrawLines(canv, projectile.getXes(), projectile.getYes(), window);
+            await Task.Delay(1000);
+
+        }
+        async void DrawLines(Canvas canv, List<double> X, List<double> Y, Window window)
+        {
+            canv.Children.Clear();
+
+            double maxX = X.Max();
+            double maxY = Y.Max();
+
+            double k_x = (canv.ActualWidth) / (maxX);
+            double k_y = (canv.ActualHeight) / (maxY);
+            double k = Math.Min(k_x, k_y);
+            int radius = 8;
+            Point ptCenter = new Point(0, 0);
+            Ellipse elips = new Ellipse
+            {
+                Stroke = Brushes.Red,
+                StrokeThickness = 3,
+                Width = radius*2,
+                Height = radius*2
+            };
+            canv.Children.Add(elips);
+            Canvas.SetLeft(elips, 0);
+            Canvas.SetTop(elips, 0);
+            for (int i = 0; i < X.Count - 1 & Y[i + 1] >= 0; i++)
+            {
+                Line line = new Line
+                {
+                    X1 = X[i] * k,
+                    Y1 = canv.ActualHeight - Y[i] * k,
+                    X2 = X[i + 1] * k,
+                    Y2 = canv.ActualHeight - Y[i + 1] * k,
+                    Stroke = Brushes.Black,
+                    StrokeThickness = 4
+                };
+                Canvas.SetLeft(elips, X[i + 1] * k - radius);
+                Canvas.SetTop(elips, canv.ActualHeight - Y[i + 1] * k - radius);
+                canv.Children.Add(line);
+                await Task.Delay(1);
+            }
+            await Task.Delay(1000);
+            window.Close();
         }
     }
 }
