@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -133,9 +134,40 @@ namespace birds
             Grid.SetRow(txtOutput, 1);
             Grid.SetRowSpan(txtOutput, 5);
 
-           
-            
 
+            Button readFile = new Button
+            {
+                Content = "Файл",
+                Margin = new Thickness(5),
+                IsDefault = true
+
+            };
+            readFile.Click += readFile_Click;
+            grid.Children.Add(readFile);
+            Grid.SetRow(readFile, 5);
+            Grid.SetColumn(readFile, 3);
+
+
+        }
+
+        private void fillBoxes(string inputFile)
+        {
+            string[] lines = File.ReadAllLines(inputFile);
+            for (int i = 0; i < lines.Length; i++)
+            {
+                textBoxes[i].Text = lines[i];
+            }
+        }
+
+        private void readFile_Click(object e, EventArgs a)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            if ((bool)dialog.ShowDialog(this))
+            {
+                string inputFile = dialog.FileName;
+                fillBoxes(inputFile);
+                buttonFly_Click(e, a);
+            }
         }
 
         async private void buttonFly_Click(object e, EventArgs a)
@@ -156,6 +188,7 @@ namespace birds
             projectile.CalculateTrajectory(outputfile);
             string outputContent = File.ReadAllText(outputfile);
             Window window = new Window();
+            window.Owner = this;
             ImageBrush image = new ImageBrush();
             string stringi = "https://i.pinimg.com/originals/cb/20/0c/cb200cb1486977f8efec0172d8f035db.jpg";
             Uri uri = new Uri(stringi);
@@ -168,7 +201,6 @@ namespace birds
             };
            
             window.Content = canv;
-            //gridcanv.Children.Add(canv);
             txtOutput.Text = outputContent;
             window.Show();
             DrawLines(canv, projectile.getXes(), projectile.getYes(), window);
@@ -211,7 +243,7 @@ namespace birds
                 Canvas.SetLeft(elips, X[i + 1] * k - radius);
                 Canvas.SetTop(elips, canv.ActualHeight - Y[i + 1] * k - radius);
                 canv.Children.Add(line);
-                await Task.Delay(1);
+                await Task.Delay(100);
             }
             await Task.Delay(1000);
             window.Close();
