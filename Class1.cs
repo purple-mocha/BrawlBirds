@@ -243,7 +243,7 @@ namespace birds
                 Canvas.SetLeft(elips, X[i + 1] * k - radius);
                 Canvas.SetTop(elips, canv.ActualHeight - Y[i + 1] * k - radius);
                 canv.Children.Add(line);
-                await Task.Delay(100);
+                await Task.Delay(1);
             }
             await Task.Delay(1000);
             window.Close();
