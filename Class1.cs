@@ -82,7 +82,7 @@ namespace birds
                     BorderThickness = new Thickness(2),
                     BorderBrush = new SolidColorBrush(Colors.Black),
                     Margin = new Thickness(5),
-                    VerticalContentAlignment = VerticalAlignment.Center  
+                    VerticalContentAlignment = VerticalAlignment.Center 
                 };
                 grid.Children.Add(txtbox);
                 Grid.SetRow(txtbox, i + 1);
@@ -126,7 +126,7 @@ namespace birds
                 VerticalScrollBarVisibility = ScrollBarVisibility.Hidden,
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden,
                 TextWrapping = TextWrapping.Wrap,
-                Background = new SolidColorBrush(Colors.Transparent),
+                Background = new SolidColorBrush(Colors.Transparent)
             };
             
             grid.Children.Add(txtOutput);
@@ -134,13 +134,18 @@ namespace birds
             Grid.SetRow(txtOutput, 1);
             Grid.SetRowSpan(txtOutput, 5);
 
-
             Button readFile = new Button
             {
                 Content = "Файл",
                 Margin = new Thickness(5),
-                IsDefault = true
-
+                IsDefault = true,
+                Height = 50,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                Background = new SolidColorBrush(Color.FromScRgb(0.5f, 0, 0, 0)),
+                Foreground = new SolidColorBrush(Colors.White),
+                FontFamily = new FontFamily("Arial"),
+                FontWeight = FontWeights.Bold,
+                FontSize = 20
             };
             readFile.Click += readFile_Click;
             grid.Children.Add(readFile);
